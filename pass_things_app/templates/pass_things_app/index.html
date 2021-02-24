@@ -61,7 +61,7 @@
             </div>
         </div>
         {% if not request.user.is_authenticated %}
-            <a href="#" class="btn btn--large">Załóż konto</a>
+            <a href="{% url 'register' %}" class="btn btn--large">Załóż konto</a>
         {% endif %}
     </section>
 
