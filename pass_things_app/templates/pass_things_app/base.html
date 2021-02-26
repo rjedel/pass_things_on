@@ -33,7 +33,8 @@
         </div>
     </div>
 </footer>
-
-<script src="{% static 'pass_things_app/js/app.js' %}"></script>
+{% block scripts %}
+    <script src="{% static 'pass_things_app/js/app.js' %}"></script>
+{% endblock %}
 </body>
 </html>

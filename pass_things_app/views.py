@@ -1,13 +1,18 @@
+from django.contrib.auth import get_user_model
 from django.db.models import Sum
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views import View
 
+from .forms import RegisterForm
 from .models import Donation, Institution
+
+User = get_user_model()
 
 
 class LandingPageView(View):
     def get(self, request):
-        total_quantity = Donation.objects.aggregate(Sum('quantity'))['quantity__sum']
+        total_quantity = Donation.objects.aggregate(Sum('quantity'))['quantity__sum'] or 0
         supported_institutions = Donation.objects.values('institution').distinct().count()
 
         foundations = Institution.objects.filter(type=Institution.TYPE_CHOICES[0][0]).order_by('?')[:3]
@@ -49,4 +54,25 @@ class LoginView(View):
 
 class RegisterView(View):
     def get(self, request):
-        return render(request, 'pass_things_app/register.html')
+        form = RegisterForm()
+        ctx = {
+            'form': form,
+        }
+        return render(request, 'pass_things_app/register.html', context=ctx)
+
+    def post(self, request):
+        form = RegisterForm(data=request.POST)
+        if form.is_valid():
+            first_name = form.cleaned_data['name']
+            last_name = form.cleaned_data['surname']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            password2 = form.cleaned_data['password2']
+            User.objects.create_user(
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                password=password,
+            )
+            return redirect(reverse('login'))
+        return render(request, 'pass_things_app/register.html', {'form': form})
