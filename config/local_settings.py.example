@@ -7,6 +7,10 @@ INSTALLED_APPS = [
     'django_extensions',
 ]
 
+DEBUG = True
+
+ALLOWED_HOSTS = ['192.168.1.48', '127.0.0.1', '0.0.0.0']
+
 DATABASES = {
     'default': {
         'HOST': '127.0.0.1',
