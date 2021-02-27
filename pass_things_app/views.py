@@ -1,10 +1,11 @@
-from django.contrib.auth import get_user_model
+from django.conf import settings
+from django.contrib.auth import get_user_model, authenticate, login
 from django.db.models import Sum
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 
-from .forms import RegisterForm
+from .forms import RegisterForm, CustomLoginForm
 from .models import Donation, Institution
 
 User = get_user_model()
@@ -47,13 +48,31 @@ class ConfirmationDonationView(View):
         return render(request, 'pass_things_app/form-confirmation.html')
 
 
-class LoginView(View):
+class CustomLoginView(View):
     def get(self, request):
-        return render(request, 'pass_things_app/login.html')
+        if request.user.is_authenticated:
+            return redirect(reverse('landing_page'))
+        form = CustomLoginForm()
+        ctx = {
+            'form': form,
+        }
+        return render(request, 'pass_things_app/login.html', context=ctx)
+
+    def post(self, request):
+        form = CustomLoginForm(data=request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            user = authenticate(email=email, password=password)
+            login(request, user)
+            return redirect(request.GET.get('next', settings.LOGIN_REDIRECT_URL))
+        return render(request, 'pass_things_app/login.html', {'form': form})
 
 
 class RegisterView(View):
     def get(self, request):
+        if request.user.is_authenticated:
+            return redirect(reverse('landing_page'))
         form = RegisterForm()
         ctx = {
             'form': form,
