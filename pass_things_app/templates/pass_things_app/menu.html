@@ -2,11 +2,11 @@
     <ul class="nav--actions">
         {% if request.user.is_authenticated %}
             <li class="logged-user">
-                Witaj Agata
+                Witaj {{ request.user.get_short_name }}
                 <ul class="dropdown">
                     <li><a href="#">Profil</a></li>
                     <li><a href="#">Ustawienia</a></li>
-                    <li><a href="#">Wyloguj</a></li>
+                    <li><a href="{% url 'logout' %}">Wyloguj</a></li>
                 </ul>
             </li>
         {% else %}

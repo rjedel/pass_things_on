@@ -127,3 +127,5 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'pass_things_app.User'
 
 LOGIN_REDIRECT_URL = '/'
+
+LOGOUT_REDIRECT_URL = '/'
