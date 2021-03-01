@@ -17,16 +17,8 @@ class LandingPageView(View):
         supported_institutions = Donation.objects.values('institution').distinct().count()
 
         foundations = Institution.objects.filter(type=Institution.TYPE_CHOICES[0][0]).order_by('?')[:3]
-        for foundation in foundations:
-            foundation.categories_str = ', '.join(cat.name for cat in foundation.categories.order_by('name')[:5])
-
         ngos = Institution.objects.filter(type=Institution.TYPE_CHOICES[1][0]).order_by('?')[:4]
-        for ngo in ngos:
-            ngo.categories_str = ', '.join(cat.name for cat in ngo.categories.order_by('name')[:5])
-
         local_donations = Institution.objects.filter(type=Institution.TYPE_CHOICES[2][0]).order_by('?')[:2]
-        for ld in local_donations:
-            ld.categories_str = ', '.join(cat.name for cat in ld.categories.order_by('name')[:5])
 
         ctx = {
             'total_quantity': total_quantity,
