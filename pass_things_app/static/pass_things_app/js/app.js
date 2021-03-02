@@ -253,3 +253,40 @@ document.addEventListener("DOMContentLoaded", function() {
     new FormSteps(form);
   }
 });
+
+$(document).ready(function () {
+    $('[data-step="1"] .btn').click(function () {
+        const categories = $('input[type=checkbox]:checked').map(function (_, el) {
+            return $(el).val();
+        }).get();
+
+        sendCategories();
+
+        function sendCategories() {
+            $.ajax({
+                url: "/filter_institutions/",
+                type: "POST",
+                data: JSON.stringify({'categories_ids': categories}),
+
+                success: function (json) {
+                    const instDivs = document.querySelectorAll('[data-step="3"] .form-group--checkbox');
+                    instDivs.forEach(el => {
+                        if (!json['filtered_ins'].includes(parseInt(el.querySelector('input').value))) {
+                            el.style.display = 'None';
+                        }
+                    });
+                    const prevBtn = document.querySelector('[data-step="3"] .prev-step');
+                    prevBtn.addEventListener("click", function () {
+                        instDivs.forEach(el => {
+                            el.style.display = 'block'
+                        });
+                    });
+                },
+
+                error: function () {
+                    console.log('something went wrong!');
+                }
+            });
+        }
+    });
+});
