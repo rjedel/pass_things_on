@@ -62,7 +62,7 @@ class ConfirmationDonationView(View):
         return render(request, 'pass_things_app/form-confirmation.html')
 
 
-class CustomLoginView(View):
+class UserLoginView(View):
     def get(self, request):
         if request.user.is_authenticated:
             return redirect(reverse('landing_page'))

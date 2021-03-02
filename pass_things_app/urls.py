@@ -8,7 +8,7 @@ urlpatterns = [
     path('add_donation/', views.AddDonationView.as_view(), name='add_donation'),
     path('filter_institutions/', views.FilterInstitutionsView.as_view(), name='filter_institutions'),
     path('confirmation_donation/', views.ConfirmationDonationView.as_view(), name='confirmation_donation'),
-    path('login/', views.CustomLoginView.as_view(), name='login'),
+    path('login/', views.UserLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('register/', views.RegisterView.as_view(), name='register'),
 ]
