@@ -58,6 +58,9 @@ class Category(models.Model):
 
 
 class Institution(models.Model):
+    FOUNDATION = 1
+    NGO = 2
+    LOCAL_DONATION = 3
     TYPE_CHOICES = (
         (1, 'fundacja'),
         (2, 'organizacja pozarządowa'),

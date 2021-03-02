@@ -18,9 +18,9 @@ class LandingPageView(View):
         total_quantity = Donation.objects.aggregate(Sum('quantity'))['quantity__sum'] or 0
         supported_institutions = Donation.objects.values('institution').distinct().count()
 
-        foundations = Institution.objects.filter(type=Institution.TYPE_CHOICES[0][0]).order_by('?')[:3]
-        ngos = Institution.objects.filter(type=Institution.TYPE_CHOICES[1][0]).order_by('?')[:4]
-        local_donations = Institution.objects.filter(type=Institution.TYPE_CHOICES[2][0]).order_by('?')[:2]
+        foundations = Institution.objects.filter(type=Institution.FOUNDATION).order_by('?')[:3]
+        ngos = Institution.objects.filter(type=Institution.NGO).order_by('?')[:4]
+        local_donations = Institution.objects.filter(type=Institution.LOCAL_DONATION).order_by('?')[:2]
 
         ctx = {
             'total_quantity': total_quantity,
