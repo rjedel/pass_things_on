@@ -1,5 +1,3 @@
-import json
-
 from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -7,9 +5,7 @@ from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.decorators.csrf import csrf_exempt
 
 from .forms import RegisterForm, CustomLoginForm
 from .models import Donation, Institution, Category
@@ -47,16 +43,18 @@ class AddDonationView(LoginRequiredMixin, View):
         return render(request, 'pass_things_app/form.html', context=ctx)
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class FilterInstitutionsView(View):
-    def post(self, request):
-        request_data = json.loads(request.body.decode())
-        categories_lst = request_data.get('categories_ids')
-        if categories_lst:
-            filtered_institutions = Institution.objects.filter(categories__in=categories_lst)
-            filtered_institutions = list(filtered_institutions.distinct().values_list('id', flat=True))
-            return JsonResponse({'filtered_ins': filtered_institutions})
-        return None
+    def get(self, request):
+        if request.is_ajax():
+            data = request.GET.get('categories_ids')
+            if data:
+                categories_lst = [int(i) for i in list(data.replace(',', ''))]
+                filtered_institutions = Institution.objects.filter(categories__in=categories_lst)
+                filtered_institutions = list(filtered_institutions.distinct().values_list('id', flat=True))
+                return JsonResponse({'filtered_ins': filtered_institutions})
+            return JsonResponse({'filtered_ins': ''})
+
+        return JsonResponse({})
 
 
 class ConfirmationDonationView(View):
