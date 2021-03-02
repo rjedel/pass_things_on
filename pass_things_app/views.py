@@ -1,12 +1,13 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate, login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 
 from .forms import RegisterForm, CustomLoginForm
-from .models import Donation, Institution
+from .models import Donation, Institution, Category
 
 User = get_user_model()
 
@@ -30,9 +31,13 @@ class LandingPageView(View):
         return render(request, 'pass_things_app/index.html', context=ctx)
 
 
-class AddDonationView(View):
+class AddDonationView(LoginRequiredMixin, View):
     def get(self, request):
-        return render(request, 'pass_things_app/form.html')
+        categories = Category.objects.order_by('name')
+        ctx = {
+            'categories': categories,
+        }
+        return render(request, 'pass_things_app/form.html', context=ctx)
 
 
 class ConfirmationDonationView(View):
