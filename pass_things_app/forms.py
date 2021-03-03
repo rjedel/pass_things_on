@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth import authenticate
 
+from .models import Category, Institution
+
 
 class RegisterForm(forms.Form):
     name = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Imię'}))
@@ -30,3 +32,8 @@ class CustomLoginForm(forms.Form):
         if user is None:
             raise forms.ValidationError('Niepoprawny e-mail i / lub hasło')
         return cleaned_data
+
+
+class AddDonationForm(forms.Form):
+    categories = forms.ModelMultipleChoiceField(queryset=Category.objects.order_by('name'), )
+    institutions = forms.ModelChoiceField(queryset=Institution.objects.order_by('name'), empty_label=None, )

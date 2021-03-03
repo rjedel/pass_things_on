@@ -7,8 +7,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 
-from .forms import RegisterForm, CustomLoginForm
-from .models import Donation, Institution, Category
+from .forms import RegisterForm, CustomLoginForm, AddDonationForm
+from .models import Donation, Institution
 
 User = get_user_model()
 
@@ -34,11 +34,9 @@ class LandingPageView(View):
 
 class AddDonationView(LoginRequiredMixin, View):
     def get(self, request):
-        categories = Category.objects.order_by('name')
-        institutions = Institution.objects.order_by('name')
+        form = AddDonationForm()
         ctx = {
-            'categories': categories,
-            'institutions': institutions,
+            'form': form,
         }
         return render(request, 'pass_things_app/form.html', context=ctx)
 
