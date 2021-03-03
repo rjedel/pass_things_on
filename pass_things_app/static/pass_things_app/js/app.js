@@ -288,4 +288,64 @@ $(document).ready(function () {
             });
         }
     });
+
+     document.querySelector('[data-step="4"] .next-step').addEventListener('click', function () {
+
+        const categoriesArr = [];
+        const categoriesDivs = document.querySelectorAll('[data-step="1"] .form-group--checkbox');
+        categoriesDivs.forEach(el => {
+            if (el.querySelector('input').checked) {
+                categoriesArr.push(el.querySelector('.description').innerText)
+            }
+        });
+        const bagsVal = document.querySelector('[data-step="2"] input').value;
+        const bagsCategorySummary = document.querySelector('[data-step="5"] .summary--text');
+        bagsCategorySummary.innerText = `${bagsVal} worków z kategorii: ${categoriesArr.join(', ')}`;
+
+
+        let organizationName;
+        let organizationDivs = document.querySelectorAll('[data-step="3"] .form-group--checkbox');
+        organizationDivs.forEach(el => {
+            if (el.querySelector('input').checked) {
+                organizationName = el.querySelector('.title').innerText;
+            }
+        });
+        const organizationSummary = document.querySelector('[data-step="5"] li:nth-child(2) .summary--text');
+        organizationSummary.innerText = `Dla fundacji ${organizationName}`;
+
+
+        const address = document.querySelector('[data-step="4"] [name="address"]').value;
+        const addressSummary = document.querySelector('[data-step="5"] .form-section.form-section--columns li');
+        addressSummary.innerText = address;
+
+
+        const city = document.querySelector('[data-step="4"] [name="city"]').value;
+        const citySummary = document.querySelector('[data-step="5"] .form-section.form-section--columns li:nth-child(2)');
+        citySummary.innerText = city;
+
+
+        const postcode = document.querySelector('[data-step="4"] [name="postcode"]').value;
+        const postcodeSummary = document.querySelector('[data-step="5"] .form-section.form-section--columns li:nth-child(3)');
+        postcodeSummary.innerText = postcode;
+
+
+        const phone = document.querySelector('[data-step="4"] [name="phone"]').value;
+        const phoneSummary = document.querySelector('[data-step="5"] .form-section.form-section--columns li:nth-child(4)');
+        phoneSummary.innerText = phone;
+
+
+        const data = document.querySelector('[data-step="4"] [name="data"]').value;
+        const dataSummary = document.querySelectorAll('[data-step="5"] .form-section--column')[1].querySelector('li');
+        dataSummary.innerText = data;
+
+
+        const time = document.querySelector('[data-step="4"] [name="time"]').value;
+        const timeSummary = document.querySelectorAll('[data-step="5"] .form-section--column')[1].querySelector('li:nth-child(2)');
+        timeSummary.innerText = time;
+
+
+        const moreInfo = document.querySelector('[data-step="4"] [name="more_info"]').value;
+        const moreInfoSummary = document.querySelectorAll('[data-step="5"] .form-section--column')[1].querySelector('li:nth-child(3)');
+        moreInfoSummary.innerText = moreInfo;
+    });
 });
