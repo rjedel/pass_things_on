@@ -111,7 +111,7 @@
                 <div data-step="3">
                     <h3>Wybierz organizacje, której chcesz pomóc:</h3>
 
-                    {% for object_pk, object in form.institutions.field.choices %}
+                    {% for object_pk, object in form.organization.field.choices %}
                         <div class="form-group form-group--checkbox">
                             <label>
                                 <input type="radio" name="organization" value="{{ object_pk }}"/>

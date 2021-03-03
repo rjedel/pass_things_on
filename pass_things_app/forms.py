@@ -35,11 +35,18 @@ class CustomLoginForm(forms.Form):
 
 
 class AddDonationForm(forms.Form):
-    categories = forms.ModelMultipleChoiceField(queryset=Category.objects.order_by('name'), )
+    categories = forms.ModelMultipleChoiceField(
+        queryset=Category.objects.order_by('name'),
+        widget=forms.CheckboxSelectMultiple,
+    )
     bags = forms.IntegerField(
         min_value=1,
         max_value=32767,
         required=False,
         widget=forms.NumberInput(attrs={'step': '1'}),
     )
-    institutions = forms.ModelChoiceField(queryset=Institution.objects.order_by('name'), empty_label=None, )
+    organization = forms.ModelChoiceField(
+        queryset=Institution.objects.order_by('name'),
+        widget=forms.RadioSelect,
+        empty_label=None,
+    )
