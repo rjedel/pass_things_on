@@ -1,3 +1,5 @@
+import json
+
 from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -44,9 +46,8 @@ class AddDonationView(LoginRequiredMixin, View):
 class FilterInstitutionsView(View):
     def get(self, request):
         if request.is_ajax():
-            data = request.GET.get('categories_ids')
-            if data:
-                categories_lst = [int(i) for i in list(data.replace(',', ''))]
+            categories_lst = json.loads(request.GET.get('categories_ids'))
+            if categories_lst:
                 filtered_institutions = Institution.objects.filter(categories__in=categories_lst)
                 filtered_institutions = list(filtered_institutions.distinct().values_list('id', flat=True))
                 return JsonResponse({'filtered_ins': filtered_institutions})

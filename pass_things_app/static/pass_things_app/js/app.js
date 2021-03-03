@@ -266,7 +266,7 @@ $(document).ready(function () {
             $.ajax({
                 url: "/filter_institutions/",
                 type: "GET",
-                data: {'categories_ids': String(categories)},
+                data: {'categories_ids': JSON.stringify(categories)},
 
                 success: function (json) {
                     const instDivs = document.querySelectorAll('[data-step="3"] .form-group--checkbox');
