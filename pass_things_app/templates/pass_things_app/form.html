@@ -93,9 +93,9 @@
                     <h3>Podaj liczbę 60l worków, w które spakowałeś/aś rzeczy:</h3>
 
                     <div class="form-group form-group--inline">
+                        {{ form.bags.errors }}
                         <label>
                             Liczba 60l worków:
-                            {{ form.bags.errors }}
                             {{ form.bags }}
                         </label>
                     </div>
@@ -140,22 +140,26 @@
                         <div class="form-section--column">
                             <h4>Adres odbioru</h4>
                             <div class="form-group form-group--inline">
-                                <label> Ulica <input type="text" name="address"/> </label>
+                                {{ form.address.errors }}
+                                <label> Ulica {{ form.address }} </label>
                             </div>
 
                             <div class="form-group form-group--inline">
-                                <label> Miasto <input type="text" name="city"/> </label>
+                                {{ form.city.errors }}
+                                <label> Miasto {{ form.city }} </label>
                             </div>
 
                             <div class="form-group form-group--inline">
+                                {{ form.postcode.errors }}
                                 <label>
-                                    Kod pocztowy <input type="text" name="postcode"/>
+                                    Kod pocztowy {{ form.postcode }}
                                 </label>
                             </div>
 
                             <div class="form-group form-group--inline">
+                                {{ form.phone.errors }}
                                 <label>
-                                    Numer telefonu <input type="phone" name="phone"/>
+                                    Numer telefonu {{ form.phone }}
                                 </label>
                             </div>
                         </div>
@@ -163,17 +167,20 @@
                         <div class="form-section--column">
                             <h4>Termin odbioru</h4>
                             <div class="form-group form-group--inline">
-                                <label> Data <input type="date" name="data"/> </label>
+                                {{ form.data.errors }}
+                                <label> Data {{ form.data }} </label>
                             </div>
 
                             <div class="form-group form-group--inline">
-                                <label> Godzina <input type="time" name="time"/> </label>
+                                {{ form.time.errors }}
+                                <label> Godzina {{ form.time }} </label>
                             </div>
 
                             <div class="form-group form-group--inline">
+                                {{ form.more_info.errors }}
                                 <label>
                                     Uwagi dla kuriera
-                                    <textarea name="more_info" rows="5"></textarea>
+                                    {{ form.more_info }}
                                 </label>
                             </div>
                         </div>

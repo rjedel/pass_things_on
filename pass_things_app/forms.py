@@ -50,3 +50,29 @@ class AddDonationForm(forms.Form):
         widget=forms.RadioSelect,
         empty_label=None,
     )
+    address = forms.CharField(
+        required=False,
+    )
+    city = forms.CharField(
+        required=False,
+    )
+    postcode = forms.CharField(
+        required=False,
+    )
+    phone = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'type': 'phone'}),
+    )
+    data = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date'}),
+    )
+    time = forms.TimeField(
+        required=False,
+        widget=forms.TimeInput(attrs={'type': 'time'}),
+    )
+    more_info = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={'rows': '5'}),
+    )
+    more_info.widget.attrs.pop('cols', None)
