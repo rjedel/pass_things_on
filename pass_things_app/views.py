@@ -36,7 +36,7 @@ class LandingPageView(View):
 
 class AddDonationView(LoginRequiredMixin, View):
     def get(self, request):
-        form = AddDonationForm()
+        form = AddDonationForm(auto_id=False)
         ctx = {
             'form': form,
         }
