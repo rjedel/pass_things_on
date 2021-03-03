@@ -260,6 +260,11 @@ $(document).ready(function () {
             return $(el).val();
         }).get();
 
+        const instDivs = document.querySelectorAll('[data-step="3"] .form-group--checkbox');
+        instDivs.forEach(el => {
+            el.style.display = 'block'
+        });
+
         sendCategories();
 
         function sendCategories() {
@@ -274,12 +279,6 @@ $(document).ready(function () {
                         if (!json['filtered_ins'].includes(parseInt(el.querySelector('input').value))) {
                             el.style.display = 'None';
                         }
-                    });
-                    const prevBtn = document.querySelector('[data-step="3"] .prev-step');
-                    prevBtn.addEventListener("click", function () {
-                        instDivs.forEach(el => {
-                            el.style.display = 'block'
-                        });
                     });
                 },
 
