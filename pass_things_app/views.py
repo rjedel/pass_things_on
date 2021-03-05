@@ -44,8 +44,7 @@ class AddDonationView(LoginRequiredMixin, View):
 
     def post(self, request):
         if request.is_ajax():
-            form_data = json.loads(request.POST.get('form_data'))
-            form = AddDonationForm(data=form_data)
+            form = AddDonationForm(request.POST)
 
             if form.is_valid():
                 form_inputs = {

@@ -246,6 +246,24 @@ document.addEventListener("DOMContentLoaded", function() {
       e.preventDefault();
       this.currentStep++;
       this.updateForm();
+
+        $.ajax({
+            url: "/add_donation/",
+            type: "POST",
+            data: $('form').serializeArray(),
+
+            success: function (json) {
+                if (json['response']) {
+                    window.location.replace("/confirmation_donation/");
+                } else {
+                    console.log('the donation object was not saved')
+                }
+            },
+
+            error: function () {
+                console.log('something went wrong!');
+            }
+        });
     }
   }
   const form = document.querySelector(".form--steps");
@@ -289,22 +307,6 @@ $(document).ready(function () {
         }
     });
 
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-
-    const csrftoken = getCookie('csrftoken');
 
     let formData;
 
@@ -383,33 +385,5 @@ $(document).ready(function () {
         const moreInfoSummary = document.querySelectorAll('[data-step="5"] .form-section--column')[1].querySelector('li:nth-child(3)');
         moreInfoSummary.innerText = moreInfo;
         formData.more_info = moreInfo;
-    });
-
-    document.querySelector('form').addEventListener('submit', function (event) {
-
-        sendFormData();
-
-        function sendFormData() {
-            $.ajax({
-                url: "/add_donation/",
-                type: "POST",
-                data: {
-                    'csrfmiddlewaretoken': csrftoken,
-                    'form_data': JSON.stringify(formData)
-                },
-
-                success: function (json) {
-                    if (json['response']) {
-                        window.location.replace("/confirmation_donation/");
-                    } else {
-                        console.log('the donation object was not saved')
-                    }
-                },
-
-                error: function () {
-                    console.log('something went wrong!');
-                }
-            });
-        }
     });
 });
