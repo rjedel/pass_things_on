@@ -42,6 +42,32 @@ class AddDonationView(LoginRequiredMixin, View):
         }
         return render(request, 'pass_things_app/form.html', context=ctx)
 
+    def post(self, request):
+        if request.is_ajax():
+            form_data = json.loads(request.POST.get('form_data'))
+            form = AddDonationForm(data=form_data)
+
+            if form.is_valid():
+                form_inputs = {
+                    'quantity': form.cleaned_data['bags'],
+                    'institution': form.cleaned_data['organization'],
+                    'address': form.cleaned_data['address'],
+                    'phone_number': form.cleaned_data['phone'],
+                    'city': form.cleaned_data['city'],
+                    'zip_code': form.cleaned_data['postcode'],
+                    'pick_up_date': form.cleaned_data['data'],
+                    'pick_up_time': form.cleaned_data['time'],
+                    'pick_up_comment': form.cleaned_data['more_info'],
+                    'user': request.user,
+                }
+                d = Donation(**form_inputs)
+                d.save()
+                d.categories.set(form.cleaned_data['categories'])
+                return JsonResponse({'response': True})
+            return JsonResponse({'response': False})
+
+        return JsonResponse({})
+
 
 class FilterInstitutionsView(View):
     def get(self, request):

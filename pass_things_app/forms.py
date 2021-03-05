@@ -42,7 +42,6 @@ class AddDonationForm(forms.Form):
     bags = forms.IntegerField(
         min_value=1,
         max_value=32767,
-        required=False,
         widget=forms.NumberInput(attrs={'step': '1'}),
     )
     organization = forms.ModelChoiceField(
@@ -50,25 +49,16 @@ class AddDonationForm(forms.Form):
         widget=forms.RadioSelect,
         empty_label=None,
     )
-    address = forms.CharField(
-        required=False,
-    )
-    city = forms.CharField(
-        required=False,
-    )
-    postcode = forms.CharField(
-        required=False,
-    )
+    address = forms.CharField()
+    city = forms.CharField()
+    postcode = forms.CharField()
     phone = forms.CharField(
-        required=False,
         widget=forms.TextInput(attrs={'type': 'phone'}),
     )
     data = forms.DateField(
-        required=False,
         widget=forms.DateInput(attrs={'type': 'date'}),
     )
     time = forms.TimeField(
-        required=False,
         widget=forms.TimeInput(attrs={'type': 'time'}),
     )
     more_info = forms.CharField(

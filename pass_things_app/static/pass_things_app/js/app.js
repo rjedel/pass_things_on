@@ -289,63 +289,127 @@ $(document).ready(function () {
         }
     });
 
-     document.querySelector('[data-step="4"] .next-step').addEventListener('click', function () {
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    let formData;
+
+    document.querySelector('[data-step="4"] .next-step').addEventListener('click', function () {
+
+        formData = {};
 
         const categoriesArr = [];
+        const categoriesVal = [];
         const categoriesDivs = document.querySelectorAll('[data-step="1"] .form-group--checkbox');
         categoriesDivs.forEach(el => {
             if (el.querySelector('input').checked) {
-                categoriesArr.push(el.querySelector('.description').innerText)
+                categoriesArr.push(el.querySelector('.description').innerText);
+                categoriesVal.push(el.querySelector('[name="categories"]').value);
             }
         });
-        const bagsVal = document.querySelector('[data-step="2"] input').value;
+        formData.categories = categoriesVal;
+
+
+        const bagsVal = document.querySelector('[name="bags"]').value;
+        formData.bags = bagsVal;
         const bagsCategorySummary = document.querySelector('[data-step="5"] .summary--text');
         bagsCategorySummary.innerText = `${bagsVal} worków z kategorii: ${categoriesArr.join(', ')}`;
 
 
+        formData.organization = '';
         let organizationName;
         let organizationDivs = document.querySelectorAll('[data-step="3"] .form-group--checkbox');
         organizationDivs.forEach(el => {
             if (el.querySelector('input').checked) {
                 organizationName = el.querySelector('.title').innerText;
+                formData.organization = el.querySelector('[name="organization"]').value;
             }
         });
         const organizationSummary = document.querySelector('[data-step="5"] li:nth-child(2) .summary--text');
         organizationSummary.innerText = `Dla fundacji ${organizationName}`;
 
 
-        const address = document.querySelector('[data-step="4"] [name="address"]').value;
+        const address = document.querySelector('[name="address"]').value;
         const addressSummary = document.querySelector('[data-step="5"] .form-section.form-section--columns li');
         addressSummary.innerText = address;
+        formData.address = address;
 
 
-        const city = document.querySelector('[data-step="4"] [name="city"]').value;
+        const city = document.querySelector('[name="city"]').value;
         const citySummary = document.querySelector('[data-step="5"] .form-section.form-section--columns li:nth-child(2)');
         citySummary.innerText = city;
+        formData.city = city;
 
 
-        const postcode = document.querySelector('[data-step="4"] [name="postcode"]').value;
+        const postcode = document.querySelector('[name="postcode"]').value;
         const postcodeSummary = document.querySelector('[data-step="5"] .form-section.form-section--columns li:nth-child(3)');
         postcodeSummary.innerText = postcode;
+        formData.postcode = postcode;
 
 
-        const phone = document.querySelector('[data-step="4"] [name="phone"]').value;
+        const phone = document.querySelector('[name="phone"]').value;
         const phoneSummary = document.querySelector('[data-step="5"] .form-section.form-section--columns li:nth-child(4)');
         phoneSummary.innerText = phone;
+        formData.phone = phone;
 
 
-        const data = document.querySelector('[data-step="4"] [name="data"]').value;
+        const data = document.querySelector('[name="data"]').value;
         const dataSummary = document.querySelectorAll('[data-step="5"] .form-section--column')[1].querySelector('li');
         dataSummary.innerText = data;
+        formData.data = data;
 
 
-        const time = document.querySelector('[data-step="4"] [name="time"]').value;
+        const time = document.querySelector('[name="time"]').value;
         const timeSummary = document.querySelectorAll('[data-step="5"] .form-section--column')[1].querySelector('li:nth-child(2)');
         timeSummary.innerText = time;
+        formData.time = time;
 
 
-        const moreInfo = document.querySelector('[data-step="4"] [name="more_info"]').value;
+        const moreInfo = document.querySelector('[name="more_info"]').value;
         const moreInfoSummary = document.querySelectorAll('[data-step="5"] .form-section--column')[1].querySelector('li:nth-child(3)');
         moreInfoSummary.innerText = moreInfo;
+        formData.more_info = moreInfo;
+    });
+
+    document.querySelector('form').addEventListener('submit', function (event) {
+
+        sendFormData();
+
+        function sendFormData() {
+            $.ajax({
+                url: "/add_donation/",
+                type: "POST",
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'form_data': JSON.stringify(formData)
+                },
+
+                success: function (json) {
+                    if (json['response']) {
+                        window.location.replace("/confirmation_donation/");
+                    } else {
+                        console.log('the donation object was not saved')
+                    }
+                },
+
+                error: function () {
+                    console.log('something went wrong!');
+                }
+            });
+        }
     });
 });
