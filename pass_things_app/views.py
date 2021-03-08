@@ -74,7 +74,9 @@ class FilterInstitutionsView(View):
             categories_lst = json.loads(request.GET.get('categories_ids'))
             if categories_lst:
                 filtered_institutions = Institution.objects.filter(categories__in=categories_lst)
-                filtered_institutions = list(filtered_institutions.distinct().values_list('id', flat=True))
+                filtered_institutions = list(
+                    filtered_institutions.distinct().values_list('id', 'name', 'description', )
+                )
                 return JsonResponse({'filtered_ins': filtered_institutions})
             return JsonResponse({'filtered_ins': ''})
 

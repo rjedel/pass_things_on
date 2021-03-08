@@ -292,12 +292,26 @@ $(document).ready(function () {
                 data: {'categories_ids': JSON.stringify(categories)},
 
                 success: function (json) {
-                    const instDivs = document.querySelectorAll('[data-step="3"] .form-group--checkbox');
-                    instDivs.forEach(el => {
-                        if (!json['filtered_ins'].includes(parseInt(el.querySelector('input').value))) {
-                            el.style.display = 'None';
+
+                    const previouslyAdded = document.querySelectorAll('[data-step="3"] .form-group--checkbox');
+                    previouslyAdded.forEach(el => {
+                        if (!el.querySelector('[value="old"]')) {
+                            el.remove();
                         }
                     });
+
+                    const instArr = json['filtered_ins'];
+                    const btnDiv = document.querySelector('[data-step="3"] .form-group--buttons');
+                    for (let i = 0; i < instArr.length; i++) {
+                        const newClone = document.querySelector('[data-step="3"] .form-group--checkbox').cloneNode(true);
+                        let [pk, name, description] = instArr[i];
+                        newClone.querySelector('[name="organization"]').value = pk;
+                        newClone.querySelector('.title').innerText = name;
+                        newClone.querySelector('.subtitle').innerText = description;
+                        btnDiv.parentNode.insertBefore(newClone, btnDiv)
+                    }
+
+                    document.querySelector('[value="old"]').parentElement.parentElement.style.display = 'none';
                 },
 
                 error: function () {

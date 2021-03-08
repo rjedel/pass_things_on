@@ -1,6 +1,5 @@
 {% extends 'pass_things_app/base.html' %}
 {% load static %}
-{% load extra_tags %}
 {% block title %}Formularz przekazania{% endblock title %}
 {% block content %}
     <header class="header--form-page">
@@ -111,20 +110,19 @@
                 <div data-step="3">
                     <h3>Wybierz organizacje, której chcesz pomóc:</h3>
 
-                    {% for object_pk, object in form.organization.field.choices %}
-                        <div class="form-group form-group--checkbox">
-                            <label>
-                                <input type="radio" name="organization" value="{{ object_pk }}" required/>
-                                <span class="checkbox radio"></span>
-                                <span class="description">
-                  <div class="title">{{ object }}</div>
+                    <div class="form-group form-group--checkbox">
+                        <label>
+                            <input type="radio" name="organization" value="old"/>
+                            <span class="checkbox radio"></span>
+                            <span class="description">
+                  <div class="title">Fundacja “Bez domu”</div>
                   <div class="subtitle">
-                                     {{ object_pk|display_description }}
+                    Cel i misja: Pomoc dla osób nie posiadających miejsca
+                    zamieszkania
                   </div>
                 </span>
-                            </label>
-                        </div>
-                    {% endfor %}
+                        </label>
+                    </div>
 
                     <div class="form-group form-group--buttons">
                         <button type="button" class="btn prev-step">Wstecz</button>
