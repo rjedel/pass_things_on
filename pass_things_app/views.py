@@ -73,7 +73,9 @@ class FilterInstitutionsView(View):
         if request.is_ajax():
             categories_lst = json.loads(request.GET.get('categories_ids'))
             if categories_lst:
-                filtered_institutions = Institution.objects.filter(categories__in=categories_lst)
+                filtered_institutions = Institution.objects.all()
+                for pk in categories_lst:
+                    filtered_institutions = filtered_institutions.filter(categories__id=pk)
                 filtered_institutions = list(
                     filtered_institutions.distinct().values_list('id', 'name', 'description', )
                 )
