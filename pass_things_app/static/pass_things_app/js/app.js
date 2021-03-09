@@ -270,134 +270,134 @@ document.addEventListener("DOMContentLoaded", function() {
   if (form !== null) {
     new FormSteps(form);
   }
-});
 
-$(document).ready(function () {
-    $('[data-step="1"] .btn').click(function () {
-        const categories = $('input[type=checkbox]:checked').map(function (_, el) {
-            return $(el).val();
-        }).get();
+    if (!!document.querySelector('[data-step="1"] .btn')) {
+        $('[data-step="1"] .btn').click(function () {
+            const categories = $('input[type=checkbox]:checked').map(function (_, el) {
+                return $(el).val();
+            }).get();
 
-        const instDivs = document.querySelectorAll('[data-step="3"] .form-group--checkbox');
-        instDivs.forEach(el => {
-            el.style.display = 'block'
+            const instDivs = document.querySelectorAll('[data-step="3"] .form-group--checkbox');
+            instDivs.forEach(el => {
+                el.style.display = 'block'
+            });
+
+            sendCategories();
+
+            function sendCategories() {
+                $.ajax({
+                    url: "/filter_institutions/",
+                    type: "GET",
+                    data: {'categories_ids': JSON.stringify(categories)},
+
+                    success: function (json) {
+
+                        const previouslyAdded = document.querySelectorAll('[data-step="3"] .form-group--checkbox');
+                        previouslyAdded.forEach(el => {
+                            if (!el.querySelector('[value="old"]')) {
+                                el.remove();
+                            }
+                        });
+
+                        const instArr = json['filtered_ins'];
+                        const btnDiv = document.querySelector('[data-step="3"] .form-group--buttons');
+                        for (let i = 0; i < instArr.length; i++) {
+                            const newClone = document.querySelector('[data-step="3"] .form-group--checkbox').cloneNode(true);
+                            let [pk, name, description] = instArr[i];
+                            newClone.querySelector('[name="organization"]').value = pk;
+                            newClone.querySelector('.title').innerText = name;
+                            newClone.querySelector('.subtitle').innerText = description;
+                            btnDiv.parentNode.insertBefore(newClone, btnDiv)
+                        }
+
+                        document.querySelector('[value="old"]').parentElement.parentElement.style.display = 'none';
+                    },
+
+                    error: function () {
+                        console.log('something went wrong!');
+                    }
+                });
+            }
         });
 
-        sendCategories();
 
-        function sendCategories() {
-            $.ajax({
-                url: "/filter_institutions/",
-                type: "GET",
-                data: {'categories_ids': JSON.stringify(categories)},
+        let formData;
 
-                success: function (json) {
+        document.querySelector('[data-step="4"] .next-step').addEventListener('click', function () {
 
-                    const previouslyAdded = document.querySelectorAll('[data-step="3"] .form-group--checkbox');
-                    previouslyAdded.forEach(el => {
-                        if (!el.querySelector('[value="old"]')) {
-                            el.remove();
-                        }
-                    });
+            formData = {};
 
-                    const instArr = json['filtered_ins'];
-                    const btnDiv = document.querySelector('[data-step="3"] .form-group--buttons');
-                    for (let i = 0; i < instArr.length; i++) {
-                        const newClone = document.querySelector('[data-step="3"] .form-group--checkbox').cloneNode(true);
-                        let [pk, name, description] = instArr[i];
-                        newClone.querySelector('[name="organization"]').value = pk;
-                        newClone.querySelector('.title').innerText = name;
-                        newClone.querySelector('.subtitle').innerText = description;
-                        btnDiv.parentNode.insertBefore(newClone, btnDiv)
-                    }
-
-                    document.querySelector('[value="old"]').parentElement.parentElement.style.display = 'none';
-                },
-
-                error: function () {
-                    console.log('something went wrong!');
+            const categoriesArr = [];
+            const categoriesVal = [];
+            const categoriesDivs = document.querySelectorAll('[data-step="1"] .form-group--checkbox');
+            categoriesDivs.forEach(el => {
+                if (el.querySelector('input').checked) {
+                    categoriesArr.push(el.querySelector('.description').innerText);
+                    categoriesVal.push(el.querySelector('[name="categories"]').value);
                 }
             });
-        }
-    });
+            formData.categories = categoriesVal;
 
 
-    let formData;
+            const bagsVal = document.querySelector('[name="bags"]').value;
+            formData.bags = bagsVal;
+            const bagsCategorySummary = document.querySelector('[data-step="5"] .summary--text');
+            bagsCategorySummary.innerText = `${bagsVal} worków z kategorii: ${categoriesArr.join(', ')}`;
 
-    document.querySelector('[data-step="4"] .next-step').addEventListener('click', function () {
 
-        formData = {};
+            formData.organization = '';
+            let organizationName;
+            let organizationDivs = document.querySelectorAll('[data-step="3"] .form-group--checkbox');
+            organizationDivs.forEach(el => {
+                if (el.querySelector('input').checked) {
+                    organizationName = el.querySelector('.title').innerText;
+                    formData.organization = el.querySelector('[name="organization"]').value;
+                }
+            });
+            const organizationSummary = document.querySelector('[data-step="5"] li:nth-child(2) .summary--text');
+            organizationSummary.innerText = `Dla fundacji ${organizationName}`;
 
-        const categoriesArr = [];
-        const categoriesVal = [];
-        const categoriesDivs = document.querySelectorAll('[data-step="1"] .form-group--checkbox');
-        categoriesDivs.forEach(el => {
-            if (el.querySelector('input').checked) {
-                categoriesArr.push(el.querySelector('.description').innerText);
-                categoriesVal.push(el.querySelector('[name="categories"]').value);
-            }
+
+            const address = document.querySelector('[name="address"]').value;
+            const addressSummary = document.querySelector('[data-step="5"] .form-section.form-section--columns li');
+            addressSummary.innerText = address;
+            formData.address = address;
+
+
+            const city = document.querySelector('[name="city"]').value;
+            const citySummary = document.querySelector('[data-step="5"] .form-section.form-section--columns li:nth-child(2)');
+            citySummary.innerText = city;
+            formData.city = city;
+
+
+            const postcode = document.querySelector('[name="postcode"]').value;
+            const postcodeSummary = document.querySelector('[data-step="5"] .form-section.form-section--columns li:nth-child(3)');
+            postcodeSummary.innerText = postcode;
+            formData.postcode = postcode;
+
+
+            const phone = document.querySelector('[name="phone"]').value;
+            const phoneSummary = document.querySelector('[data-step="5"] .form-section.form-section--columns li:nth-child(4)');
+            phoneSummary.innerText = phone;
+            formData.phone = phone;
+
+
+            const data = document.querySelector('[name="data"]').value;
+            const dataSummary = document.querySelectorAll('[data-step="5"] .form-section--column')[1].querySelector('li');
+            dataSummary.innerText = data;
+            formData.data = data;
+
+
+            const time = document.querySelector('[name="time"]').value;
+            const timeSummary = document.querySelectorAll('[data-step="5"] .form-section--column')[1].querySelector('li:nth-child(2)');
+            timeSummary.innerText = time;
+            formData.time = time;
+
+
+            const moreInfo = document.querySelector('[name="more_info"]').value;
+            const moreInfoSummary = document.querySelectorAll('[data-step="5"] .form-section--column')[1].querySelector('li:nth-child(3)');
+            moreInfoSummary.innerText = moreInfo;
+            formData.more_info = moreInfo;
         });
-        formData.categories = categoriesVal;
-
-
-        const bagsVal = document.querySelector('[name="bags"]').value;
-        formData.bags = bagsVal;
-        const bagsCategorySummary = document.querySelector('[data-step="5"] .summary--text');
-        bagsCategorySummary.innerText = `${bagsVal} worków z kategorii: ${categoriesArr.join(', ')}`;
-
-
-        formData.organization = '';
-        let organizationName;
-        let organizationDivs = document.querySelectorAll('[data-step="3"] .form-group--checkbox');
-        organizationDivs.forEach(el => {
-            if (el.querySelector('input').checked) {
-                organizationName = el.querySelector('.title').innerText;
-                formData.organization = el.querySelector('[name="organization"]').value;
-            }
-        });
-        const organizationSummary = document.querySelector('[data-step="5"] li:nth-child(2) .summary--text');
-        organizationSummary.innerText = `Dla fundacji ${organizationName}`;
-
-
-        const address = document.querySelector('[name="address"]').value;
-        const addressSummary = document.querySelector('[data-step="5"] .form-section.form-section--columns li');
-        addressSummary.innerText = address;
-        formData.address = address;
-
-
-        const city = document.querySelector('[name="city"]').value;
-        const citySummary = document.querySelector('[data-step="5"] .form-section.form-section--columns li:nth-child(2)');
-        citySummary.innerText = city;
-        formData.city = city;
-
-
-        const postcode = document.querySelector('[name="postcode"]').value;
-        const postcodeSummary = document.querySelector('[data-step="5"] .form-section.form-section--columns li:nth-child(3)');
-        postcodeSummary.innerText = postcode;
-        formData.postcode = postcode;
-
-
-        const phone = document.querySelector('[name="phone"]').value;
-        const phoneSummary = document.querySelector('[data-step="5"] .form-section.form-section--columns li:nth-child(4)');
-        phoneSummary.innerText = phone;
-        formData.phone = phone;
-
-
-        const data = document.querySelector('[name="data"]').value;
-        const dataSummary = document.querySelectorAll('[data-step="5"] .form-section--column')[1].querySelector('li');
-        dataSummary.innerText = data;
-        formData.data = data;
-
-
-        const time = document.querySelector('[name="time"]').value;
-        const timeSummary = document.querySelectorAll('[data-step="5"] .form-section--column')[1].querySelector('li:nth-child(2)');
-        timeSummary.innerText = time;
-        formData.time = time;
-
-
-        const moreInfo = document.querySelector('[name="more_info"]').value;
-        const moreInfoSummary = document.querySelectorAll('[data-step="5"] .form-section--column')[1].querySelector('li:nth-child(3)');
-        moreInfoSummary.innerText = moreInfo;
-        formData.more_info = moreInfo;
-    });
+    }
 });
