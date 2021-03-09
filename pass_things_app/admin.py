@@ -56,6 +56,7 @@ class NewUserAdmin(UserAdmin):
 class DonationInline(admin.TabularInline):
     can_delete = False
     model = Donation
+    extra = 0
 
 
 @admin.register(Institution)
