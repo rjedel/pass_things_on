@@ -137,3 +137,9 @@ class RegisterView(View):
             )
             return redirect(reverse('login'))
         return render(request, 'pass_things_app/register.html', {'form': form})
+
+
+class ProfileView(LoginRequiredMixin, View):
+    def get(self, request):
+        user = request.user
+        return render(request, 'pass_things_app/profile.html', {'user': user})

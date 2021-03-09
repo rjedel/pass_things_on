@@ -1,0 +1,23 @@
+{% extends 'pass_things_app/base.html' %}
+{% load static %}
+{% block title %}Profil{% endblock title %}
+{% block content %}
+    <header>
+        {% include 'pass_things_app/menu.html' %}
+    </header>
+    <section class="login-page">
+        <h2>Twój profil</h2>
+        <div class="form-group">
+            <h1 style="display: inline">Imię:</h1>
+            <p class="btn btn--highlighted">{{ user.get_short_name }}</p>
+        </div>
+        <div class="form-group">
+            <h1 style="display: inline">Nazwisko:</h1>
+            <p class="btn btn--highlighted">{{ user.last_name }}</p>
+        </div>
+        <div class="form-group">
+            <h1 style="display: inline">Email:</h1>
+            <p class="btn btn--highlighted">{{ user.get_username }}</p>
+        </div>
+    </section>
+{% endblock content %}
