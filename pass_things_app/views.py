@@ -142,4 +142,9 @@ class RegisterView(View):
 class ProfileView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
-        return render(request, 'pass_things_app/profile.html', {'user': user})
+        user_donations = Donation.objects.filter(user=user)
+        ctx = {
+            'user': user,
+            'user_donations': user_donations,
+        }
+        return render(request, 'pass_things_app/profile.html', context=ctx)

@@ -1,5 +1,6 @@
 {% extends 'pass_things_app/base.html' %}
 {% load static %}
+{% load extra_tags %}
 {% block title %}Profil{% endblock title %}
 {% block content %}
     <header>
@@ -19,5 +20,23 @@
             <h1 style="display: inline">Email:</h1>
             <p class="btn btn--highlighted">{{ user.get_username }}</p>
         </div>
+        {% if user_donations %}
+            <h2>Przekazałeś</h2>
+            {% for donation in user_donations %}
+                <div class="form-group">
+                    <h1 style="display: inline">dnia:</h1>
+                    <p class="btn btn--highlighted">{{ donation.pick_up_date }}</p>
+                    <h1 style="display: inline">przekazałeś:</h1>
+                    <p class="btn btn--highlighted">{{ donation.quantity }}</p>
+                    <h1 style="display: inline">worków, Dla:</h1>
+                    <p class="btn btn--highlighted">{{ donation.institution }}</p>
+                    {% if donation.categories.all %}
+                        <h1 style="display: inline">z kategorii</h1>
+                        <p class="btn btn--highlighted">{{ donation.categories.all|categories_str }}</p>
+                    {% endif %}
+                </div>
+                <img src="{% static 'pass_things_app/images/decoration.svg' %}" width="150rem">
+            {% endfor %}
+        {% endif %}
     </section>
 {% endblock content %}
