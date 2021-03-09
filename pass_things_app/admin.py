@@ -3,6 +3,8 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
+from pass_things_app.models import Institution, Donation
+
 User = get_user_model()
 
 
@@ -49,3 +51,22 @@ class NewUserAdmin(UserAdmin):
     )
 
     filter_horizontal = ()
+
+
+class DonationInline(admin.TabularInline):
+    can_delete = False
+    model = Donation
+
+
+@admin.register(Institution)
+class InstitutionAdmin(admin.ModelAdmin):
+    inlines = (DonationInline,)
+    list_display = ('__str__', 'short_description', 'type', 'first_three_categories')
+
+    @staticmethod
+    def short_description(obj):
+        return obj.description if len(obj.description) < 35 else (obj.description[:33] + '...')
+
+    @staticmethod
+    def first_three_categories(obj):
+        return ', '.join(c.name for c in obj.categories.all()[:3])
