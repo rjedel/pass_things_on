@@ -1,6 +1,5 @@
 {% extends 'pass_things_app/base.html' %}
 {% load static %}
-{% load extra_tags %}
 {% block title %}Profil{% endblock title %}
 {% block content %}
     <header>
@@ -32,7 +31,7 @@
                     <p class="btn btn--highlighted">{{ donation.institution }}</p>
                     {% if donation.categories.all %}
                         <h1 style="display: inline">z kategorii</h1>
-                        <p class="btn btn--highlighted">{{ donation.categories.all|categories_str }}</p>
+                        <p class="btn btn--highlighted">{{ donation.categories.all|slice:":5"|join:", " }}</p>
                     {% endif %}
                 </div>
                 <img src="{% static 'pass_things_app/images/decoration.svg' %}" width="150rem">

@@ -1,6 +1,5 @@
 {% extends 'pass_things_app/base.html' %}
 {% load static %}
-{% load extra_tags %}
 {% block title %}Przekaż dary{% endblock title %}
 {% block content %}
     <header class="header--main-page">
@@ -101,7 +100,7 @@
                         </div>
 
                         <div class="col">
-                            <div class="text">{{ foundation.categories.all|categories_str }}</div>
+                            <div class="text">{{ foundation.categories.all|slice:":5"|join:", " }}</div>
                         </div>
                     </li>
                 {% endfor %}
@@ -167,7 +166,7 @@
                         </div>
 
                         <div class="col">
-                            <div class="text">{{ ngo.categories.all|categories_str }}</div>
+                            <div class="text">{{ ngo.categories.all|slice:":5"|join:", " }}</div>
                         </div>
                     </li>
                 {% endfor % %}
@@ -197,7 +196,7 @@
                         </div>
 
                         <div class="col">
-                            <div class="text">{{ local_donation.categories.all|categories_str }}</div>
+                            <div class="text">{{ local_donation.categories.all|slice:":5"|join:", " }}</div>
                         </div>
                     </li>
                 {% endfor % %}
