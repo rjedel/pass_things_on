@@ -3,6 +3,7 @@ import json
 from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
 from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -20,9 +21,13 @@ class LandingPageView(View):
         total_quantity = Donation.objects.aggregate(Sum('quantity'))['quantity__sum'] or 0
         supported_institutions = Donation.objects.values('institution').distinct().count()
 
-        foundations = Institution.objects.filter(type=Institution.FOUNDATION).order_by('?')[:3]
-        ngos = Institution.objects.filter(type=Institution.NGO).order_by('?')[:4]
-        local_donations = Institution.objects.filter(type=Institution.LOCAL_DONATION).order_by('?')[:2]
+        foundations_qs = Institution.objects.filter(type=Institution.FOUNDATION).order_by('name')
+        paginator = Paginator(foundations_qs, 3)
+        page = request.GET.get('page')
+        foundations = paginator.get_page(page)
+
+        ngos = Institution.objects.filter(type=Institution.NGO).order_by('name')
+        local_donations = Institution.objects.filter(type=Institution.LOCAL_DONATION).order_by('name')
 
         ctx = {
             'total_quantity': total_quantity,
