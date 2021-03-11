@@ -92,61 +92,21 @@
                 się zajmują, komu pomagają i czego potrzebują.</p>
 
             <ul class="help--slides-items">
-                {% for foundation in foundations %}
-                    <li>
-                        <div class="col">
-                            <div class="title">{{ foundation.name }}</div>
-                            <div class="subtitle">Cel i misja: {{ foundation.description }}</div>
-                        </div>
+                <li>
+                    <div class="col">
+                        <div class="title"></div>
+                        <div class="subtitle"></div>
+                    </div>
 
-                        <div class="col">
-                            <div class="text">{{ foundation.categories.all|slice:":5"|join:", " }}</div>
-                        </div>
-                    </li>
-                {% endfor %}
+                    <div class="col">
+                        <div class="text"></div>
+                    </div>
+                </li>
             </ul>
-            {% if foundations.has_other_pages %}
-                <ul class="help--slides-pagination">
-                    {% if foundations.has_previous %}
-                        <li><a href="?page={{ foundations.previous_page_number }}#help"
-                               class="btn btn--small btn--without-border"
-                               data-page="{{ foundations.previous_page_number }}">&laquo;</a></li>
-                    {% endif %}
 
-                    {% if foundations.number|add:'-3' > 1 %}
-                        <li><a href="?page={{ foundations.number|add:'-4' }}#help"
-                               class="btn btn--small btn--without-border"
-                               data-page="{{ foundations.number|add:'-4' }}">&hellip;</a>
-                        </li>
-                    {% endif %}
-
-                    {% if foundations.paginator.num_pages > 1 %}
-                        {% for i in foundations.paginator.page_range %}
-                            {% if foundations.number == i %}
-                                <li><a href="?page={{ i }}#help" class="btn btn--small btn--without-border active"
-                                       data-page="{{ i }}">{{ i }}</a></li>
-                            {% elif i > foundations.number|add:'-4' and i < foundations.number|add:'4' %}
-                                <li><a href="?page={{ i }}#help"
-                                       class="btn btn--small btn--without-border"
-                                       data-page="{{ i }}">{{ i }}</a></li>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-
-                    {% if foundations.paginator.num_pages > foundations.number|add:'3' %}
-                        <li><a href="?page={{ foundations.number|add:'4' }}#help"
-                               class="btn btn--small btn--without-border"
-                               data-page="{{ foundations.number|add:'4' }}">&hellip;</a>
-                        </li>
-                    {% endif %}
-
-                    {% if foundations.has_next %}
-                        <li><a href="?page={{ foundations.next_page_number }}#help"
-                               class="btn btn--small btn--without-border"
-                               data-page="{{ foundations.next_page_number }}">&raquo;</a></li>
-                    {% endif %}
-                </ul>
-            {% endif %}
+            <ul class="help--slides-pagination">
+                <li><a href="#" class="btn btn--small btn--without-border" data-page=""></a></li>
+            </ul>
         </div>
 
 
@@ -158,29 +118,21 @@
                 quos suscipit corporis!
             </p>
             <ul class="help--slides-items">
-                {% for ngo in ngos %}
-                    <li>
-                        <div class="col">
-                            <div class="title">{{ ngo.name }}</div>
-                            <div class="subtitle">{{ ngo.description }}</div>
-                        </div>
+                <li>
+                    <div class="col">
+                        <div class="title"></div>
+                        <div class="subtitle"></div>
+                    </div>
 
-                        <div class="col">
-                            <div class="text">{{ ngo.categories.all|slice:":5"|join:", " }}</div>
-                        </div>
-                    </li>
-                {% endfor % %}
+                    <div class="col">
+                        <div class="text"></div>
+                    </div>
+                </li>
             </ul>
 
-            <!-- Pagination
             <ul class="help--slides-pagination">
-              <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>
-              <li><a href="#" class="btn btn--small btn--without-border" data-page="2">2</a></li>
-              <li><a href="#" class="btn btn--small btn--without-border" data-page="3">3</a></li>
-              <li><a href="#" class="btn btn--small btn--without-border" data-page="4">4</a></li>
-              <li><a href="#" class="btn btn--small btn--without-border" data-page="5">5</a></li>
+                <li><a href="#" class="btn btn--small btn--without-border" data-page=""></a></li>
             </ul>
-            -->
         </div>
 
         <!-- SLIDE 3 -->
@@ -188,26 +140,21 @@
             <p>Lorem ipsum dolor sit amet, his ocurreret persequeris ea, ad utinam laudem duo. Verterem adipisci
                 partiendo eos ne, ea his reque quaeque recteque, ne quo lobortis intellegam.</p>
             <ul class="help--slides-items">
-                {% for local_donation in local_donations %}
-                    <li>
-                        <div class="col">
-                            <div class="title">{{ local_donation.name }}</div>
-                            <div class="subtitle">{{ local_donation.description }}</div>
-                        </div>
+                <li>
+                    <div class="col">
+                        <div class="title"></div>
+                        <div class="subtitle"></div>
+                    </div>
 
-                        <div class="col">
-                            <div class="text">{{ local_donation.categories.all|slice:":5"|join:", " }}</div>
-                        </div>
-                    </li>
-                {% endfor % %}
+                    <div class="col">
+                        <div class="text"></div>
+                    </div>
+                </li>
             </ul>
 
-            <!-- Pagination
             <ul class="help--slides-pagination">
-              <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>
-              <li><a href="#" class="btn btn--small btn--without-border" data-page="2">2</a></li>
+                <li><a href="#" class="btn btn--small btn--without-border" data-page=""></a></li>
             </ul>
-            -->
         </div>
     </section>
 {% endblock content %}

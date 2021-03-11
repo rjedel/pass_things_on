@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
       this.$buttonsContainer = $el.querySelector(".help--buttons");
       this.$slidesContainers = $el.querySelectorAll(".help--slides");
       this.currentSlide = this.$buttonsContainer.querySelector(".active").parentElement.dataset.id;
+      this.elementsPerPage = 5;
       this.init();
     }
 
@@ -33,6 +34,9 @@ document.addEventListener("DOMContentLoaded", function() {
           this.changePage(e);
         }
       });
+        this.populateSlide(this.elementsPerPage, 'foundations', 1);
+        this.populateSlide(this.elementsPerPage, 'ngos', 2);
+        this.populateSlide(this.elementsPerPage, 'local_donations', 3);
     }
 
     changeSlide(e) {
@@ -56,6 +60,47 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     }
 
+      populateSlide(elPerPage, institutionType, slideDataId) {
+          $.ajax({
+              url: "/institutions/",
+              type: "GET",
+
+              success: function (json) {
+                  const institutionArr = json[`${institutionType}`];
+                  const ulElement = document.querySelector(`.help--slides[data-id="${slideDataId}"] ul`);
+                  for (let i = 0; i < institutionArr.length; i++) {
+                      const newClone = ulElement.firstElementChild.cloneNode(true);
+                      let [name, description, categories] = institutionArr[i];
+                      newClone.querySelector('.title').innerText = name;
+                      newClone.querySelector('.subtitle').innerText = description;
+                      newClone.querySelector('.text').innerText = categories;
+                      if (i >= elPerPage) {
+                          newClone.style.display = 'none'
+                      }
+                      ulElement.appendChild(newClone);
+                  }
+                  ulElement.firstElementChild.remove();
+
+
+                  const ulPagination = document.querySelector(`.help--slides[data-id="${slideDataId}"] ul.help--slides-pagination`);
+                  for (let i = 1; i <= Math.ceil(institutionArr.length / elPerPage); i++) {
+                      const newClone = ulPagination.firstElementChild.cloneNode(true);
+                      newClone.firstElementChild.dataset.page = i;
+                      newClone.firstElementChild.innerText = i;
+                      if (i === 1) {
+                          newClone.firstElementChild.classList.add('active');
+                      }
+                      ulPagination.appendChild(newClone);
+                  }
+                  ulPagination.firstElementChild.remove();
+              },
+
+              error: function () {
+                  console.log('something went wrong!');
+              }
+          });
+      }
+
     /**
      * TODO: callback to page change event
      */
@@ -63,7 +108,23 @@ document.addEventListener("DOMContentLoaded", function() {
       e.preventDefault();
       const page = e.target.dataset.page;
 
-      console.log(page);
+        // console.log(page);
+
+        const slideId = e.target.parentElement.parentElement.parentElement.dataset.id;
+
+        const liPagination = document.querySelectorAll(`div[data-id="${slideId}"] a`);
+        liPagination.forEach(li => li.classList.remove('active'));
+        e.target.classList.add('active');
+
+        const ulContent = document.querySelector(`.help--slides[data-id="${slideId}"] ul`).children;
+        const firstPageElIndex = this.elementsPerPage * (page - 1);
+        for (let i = 0; i < ulContent.length; i++) {
+            if (firstPageElIndex + this.elementsPerPage > i && i >= firstPageElIndex) {
+                ulContent[i].style.display = 'flex';
+            } else {
+                ulContent[i].style.display = 'none';
+            }
+        }
     }
   }
   const helpSection = document.querySelector(".help");
