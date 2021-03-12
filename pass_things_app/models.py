@@ -93,3 +93,4 @@ class Donation(models.Model):
         blank=True,
         related_name='donations'
     )
+    is_taken = models.BooleanField(null=True, default=None)

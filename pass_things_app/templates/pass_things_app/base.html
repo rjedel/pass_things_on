@@ -6,7 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>{% block title %}{% endblock %}</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'pass_things_app/css/style.css' %}"/>
+    {% block styles %}
+        <link rel="stylesheet" href="{% static 'pass_things_app/css/style.css' %}"/>
+    {% endblock %}
 </head>
 <body>
 

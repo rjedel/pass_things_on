@@ -1,6 +1,10 @@
 {% extends 'pass_things_app/base.html' %}
 {% load static %}
 {% block title %}Profil{% endblock title %}
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'pass_things_app/css/table.css' %}"/>
+{% endblock %}
 {% block content %}
     <header>
         {% include 'pass_things_app/menu.html' %}
@@ -21,21 +25,48 @@
         </div>
         {% if user_donations %}
             <h2>Przekazałeś</h2>
-            {% for donation in user_donations %}
-                <div class="form-group">
-                    <h1 style="display: inline">dnia:</h1>
-                    <p class="btn btn--highlighted">{{ donation.pick_up_date }}</p>
-                    <h1 style="display: inline">przekazałeś:</h1>
-                    <p class="btn btn--highlighted">{{ donation.quantity }}</p>
-                    <h1 style="display: inline">worków, Dla:</h1>
-                    <p class="btn btn--highlighted">{{ donation.institution }}</p>
-                    {% if donation.categories.all %}
-                        <h1 style="display: inline">z kategorii</h1>
-                        <p class="btn btn--highlighted">{{ donation.categories.all|slice:":5"|join:", " }}</p>
-                    {% endif %}
-                </div>
-                <img src="{% static 'pass_things_app/images/decoration.svg' %}" width="150rem">
-            {% endfor %}
+            <table class="tg form-group">
+                <thead>
+                <tr>
+                    <th class="tg-0lax"><h1>Lp.</h1></th>
+                    <th class="tg-0lax"><h1>Data</h1></th>
+                    <th class="tg-0lax"><h1>Worków</h1></th>
+                    <th class="tg-0lax"><h1>Dla</h1></th>
+                    <th class="tg-0lax"><h1>Z kategorii</h1></th>
+                    <th class="tg-0lax"><h1>Przekazane?</h1></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for donation in user_donations %}
+                    <tr>
+                        <td class="tg-0lax">{{ forloop.counter }}</td>
+                        <td class="tg-0lax">{{ donation.pick_up_date }}</td>
+                        <td class="tg-0lax">{{ donation.quantity }}</td>
+                        <td class="tg-0lax">{{ donation.institution }}</td>
+                        <td class="tg-0lax">{{ donation.categories.all|slice:":5"|join:", " }}</td>
+                        <td class="tg-0lax" data-donation_pk="{{ donation.pk }}">
+                            <input type="radio" id="{{ donation.pk }}--yes"
+                                   name="is_taken--{{ donation.pk }}"
+                                   value="yes"
+                                   {% if donation.is_taken is True %}checked{% endif %}>
+                            <label for="{{ donation.pk }}--yes">Tak</label>
+
+                            <input type="radio" id="{{ donation.pk }}--no"
+                                   name="is_taken--{{ donation.pk }}"
+                                   value="no"
+                                   {% if donation.is_taken is False %}checked{% endif %}>
+                            <label for="{{ donation.pk }}--no">Nie</label>
+
+                            <input type="radio" id="{{ donation.pk }}--unknown"
+                                   name="is_taken--{{ donation.pk }}"
+                                   value="unknown"
+                                   {% if donation.is_taken is None %}checked{% endif %}>
+                            <label for="{{ donation.pk }}--unknown">Brak informacji</label>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         {% endif %}
     </section>
 {% endblock content %}

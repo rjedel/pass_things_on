@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model, authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import View
 
@@ -158,9 +158,30 @@ class RegisterView(View):
 class ProfileView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
-        user_donations = Donation.objects.filter(user=user)
+        user_donations = Donation.objects.filter(user=user).order_by('-pick_up_date', '-pick_up_time')
         ctx = {
             'user': user,
             'user_donations': user_donations,
         }
         return render(request, 'pass_things_app/profile.html', context=ctx)
+
+    def post(self, request):
+        if request.is_ajax():
+            donation_pk = request.POST.get('donationPk')
+            donation_val = request.POST.get('donationVal')
+
+            if donation_pk and donation_val:
+                user_donations = get_object_or_404(Donation, user=request.user, pk=donation_pk)
+
+                if donation_val == 'yes':
+                    user_donations.is_taken = True
+                elif donation_val == 'no':
+                    user_donations.is_taken = False
+                elif donation_val == 'unknown':
+                    user_donations.is_taken = None
+
+                user_donations.save()
+                return JsonResponse({'response': True})
+            return JsonResponse({'response': False})
+
+        return JsonResponse({})
