@@ -1,0 +1,23 @@
+{% extends 'pass_things_app/base.html' %}
+{% load static %}
+{% block title %}Edytuj konto{% endblock title %}
+{% block content %}
+    <header>
+        {% include 'pass_things_app/menu.html' %}
+    </header>
+
+    <section class="login-page">
+        <h2>Edytuj konto</h2>
+        <form method="post" action="">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="form-group form-group--buttons">
+                <button class="btn" type="submit">Zmień</button>
+            </div>
+        </form>
+    </section>
+{% endblock content %}
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'pass_things_app/js/register_login.js' %}"></script>
+{% endblock %}

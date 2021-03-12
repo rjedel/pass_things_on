@@ -6,8 +6,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import View
+from django.views.generic import UpdateView
 
 from .forms import RegisterForm, CustomLoginForm, AddDonationForm
 from .models import Donation, Institution
@@ -185,3 +186,10 @@ class ProfileView(LoginRequiredMixin, View):
             return JsonResponse({'response': False})
 
         return JsonResponse({})
+
+
+class EditProfileView(LoginRequiredMixin, UpdateView):
+    model = User
+    fields = ('first_name', 'last_name',)
+    template_name_suffix = '_update_form'
+    success_url = reverse_lazy('profile')
