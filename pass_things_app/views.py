@@ -1,16 +1,15 @@
 import json
 
 from django.conf import settings
-from django.contrib.auth import get_user_model, authenticate, login
+from django.contrib.auth import get_user_model, authenticate, login, update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.views import View
-from django.views.generic import UpdateView
 
-from .forms import RegisterForm, CustomLoginForm, AddDonationForm
+from .forms import RegisterForm, CustomLoginForm, AddDonationForm, EditProfileForm, UserPasswordChangeForm
 from .models import Donation, Institution
 
 User = get_user_model()
@@ -188,8 +187,33 @@ class ProfileView(LoginRequiredMixin, View):
         return JsonResponse({})
 
 
-class EditProfileView(LoginRequiredMixin, UpdateView):
-    model = User
-    fields = ('first_name', 'last_name',)
-    template_name_suffix = '_update_form'
-    success_url = reverse_lazy('profile')
+class EditProfileView(LoginRequiredMixin, View):
+    def get(self, request):
+        form = EditProfileForm(instance=request.user, auto_id=False)
+        return render(request, 'pass_things_app/edit_profile.html', {'form': form})
+
+    def post(self, request):
+        form = EditProfileForm(request.POST, instance=request.user, auto_id=False)
+        # password = form.data['password']
+        # if password and not request.user.check_password(password):
+        #     form.add_error('password', 'Błędne Hasło')
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('profile'))
+        return render(request, 'pass_things_app/edit_profile.html', {'form': form})
+
+
+class ChangePasswordView(LoginRequiredMixin, View):
+    def get(self, request):
+        form = UserPasswordChangeForm(user=request.user)
+        return render(request, 'pass_things_app/change_password.html', {'form': form})
+
+    def post(self, request):
+        form = UserPasswordChangeForm(data=request.POST, user=request.user)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            ctx = {'msg': 'Hasło zmienione poprawnie', }
+            return render(request, 'pass_things_app/change_password.html', context=ctx)
+
+        return render(request, 'pass_things_app/change_password.html', {'form': form})

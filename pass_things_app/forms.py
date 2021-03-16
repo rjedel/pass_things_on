@@ -1,7 +1,10 @@
 from django import forms
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth.forms import PasswordChangeForm
 
 from .models import Category, Institution
+
+User = get_user_model()
 
 
 class RegisterForm(forms.Form):
@@ -66,3 +69,47 @@ class AddDonationForm(forms.Form):
         widget=forms.Textarea(attrs={'rows': '5'}),
     )
     more_info.widget.attrs.pop('cols', None)
+
+
+class EditProfileForm(forms.ModelForm):
+    email = forms.CharField(label=False, widget=forms.TextInput(attrs={'placeholder': 'Email'}))
+    first_name = forms.CharField(label=False, widget=forms.TextInput(attrs={'placeholder': 'Imię'}))
+    last_name = forms.CharField(label=False, widget=forms.TextInput(attrs={'placeholder': 'Nazwisko'}))
+
+    password = forms.CharField(label=False,
+                               widget=forms.PasswordInput(attrs={'placeholder': 'Obecne hasło', }))
+
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name',)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = self.cleaned_data.get('password')
+        email = self.cleaned_data.get('email')
+        user = authenticate(email=email, password=password)
+        if password and user is None:
+            raise forms.ValidationError({'password': 'Błędne Hasło'})
+        return cleaned_data
+
+
+class UserPasswordChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(label=False,
+                                   widget=forms.PasswordInput(attrs={'placeholder': 'Stare hasło', }))
+    new_password1 = forms.CharField(label=False,
+                                    widget=forms.PasswordInput(attrs={'placeholder': 'Nowe hasło', }))
+    new_password2 = forms.CharField(label=False,
+                                    widget=forms.PasswordInput(attrs={'placeholder': 'Nowe hasło (powtórz)', }))
+
+    class Meta:
+        model = User
+        fields = '__all__'
+
+    def clean(self):
+        cleaned_data = super().clean()
+        old_password = cleaned_data.get('old_password')
+        new_password1 = cleaned_data.get('new_password1')
+        new_password2 = cleaned_data.get('new_password2')
+        if old_password == new_password1 or old_password == new_password2:
+            raise forms.ValidationError('Nowe hasło musi się różnić od starego')
+        return cleaned_data

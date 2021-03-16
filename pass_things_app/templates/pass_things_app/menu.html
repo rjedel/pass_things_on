@@ -5,7 +5,7 @@
                 Witaj {{ request.user.get_short_name }}
                 <ul class="dropdown">
                     <li><a href="{% url 'profile' %}">Profil</a></li>
-                    <li><a href="#">Ustawienia</a></li>
+                    <li><a href="{% url 'edit_profile' %}">Ustawienia</a></li>
                     {% if request.user.is_superuser %}
                         <li><a href="{% url 'admin:index' %}">Panel administracyjny</a></li>
                     {% endif %}
