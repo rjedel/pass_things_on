@@ -110,7 +110,7 @@ class UserLoginView(View):
     def get(self, request):
         if request.user.is_authenticated:
             return redirect(reverse('landing_page'))
-        form = CustomLoginForm()
+        form = CustomLoginForm(auto_id=False, )
         ctx = {
             'form': form,
         }
