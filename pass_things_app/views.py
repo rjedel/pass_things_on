@@ -117,7 +117,7 @@ class UserLoginView(View):
         return render(request, 'pass_things_app/login.html', context=ctx)
 
     def post(self, request):
-        form = CustomLoginForm(data=request.POST)
+        form = CustomLoginForm(data=request.POST, auto_id=False, )
         if form.is_valid():
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
@@ -131,14 +131,14 @@ class RegisterView(View):
     def get(self, request):
         if request.user.is_authenticated:
             return redirect(reverse('landing_page'))
-        form = RegisterForm()
+        form = RegisterForm(auto_id=False, )
         ctx = {
             'form': form,
         }
         return render(request, 'pass_things_app/register.html', context=ctx)
 
     def post(self, request):
-        form = RegisterForm(data=request.POST)
+        form = RegisterForm(data=request.POST, auto_id=False)
         if form.is_valid():
             first_name = form.cleaned_data['name']
             last_name = form.cleaned_data['surname']

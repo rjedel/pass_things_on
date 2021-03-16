@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.password_validation import validate_password
 
 from .models import Category, Institution
 
@@ -8,11 +9,27 @@ User = get_user_model()
 
 
 class RegisterForm(forms.Form):
-    name = forms.CharField(label=False, max_length=30, widget=forms.TextInput(attrs={'placeholder': 'Imię'}))
-    surname = forms.CharField(label=False, max_length=150, widget=forms.TextInput(attrs={'placeholder': 'Nazwisko'}))
-    email = forms.EmailField(label=False, max_length=254, widget=forms.EmailInput(attrs={'placeholder': 'Email'}))
-    password = forms.CharField(label=False, widget=forms.PasswordInput(attrs={'placeholder': 'Hasło'}))
-    password2 = forms.CharField(label=False, widget=forms.PasswordInput(attrs={'placeholder': 'Powtórz hasło'}))
+    name = forms.CharField(label=False,
+                           min_length=2,
+                           max_length=30,
+                           widget=forms.TextInput(attrs={'placeholder': 'Imię'}))
+
+    surname = forms.CharField(label=False,
+                              min_length=2,
+                              max_length=150,
+                              widget=forms.TextInput(attrs={'placeholder': 'Nazwisko'}))
+
+    email = forms.EmailField(label=False,
+                             max_length=254,
+                             widget=forms.EmailInput(attrs={'placeholder': 'Email'}))
+
+    password = forms.CharField(label=False,
+                               widget=forms.PasswordInput(attrs={'placeholder': 'Hasło'}),
+                               validators=[validate_password])
+
+    password2 = forms.CharField(label=False,
+                                widget=forms.PasswordInput(attrs={'placeholder': 'Powtórz hasło'}),
+                                validators=[validate_password])
 
     def clean(self):
         cleaned_data = super(RegisterForm, self).clean()

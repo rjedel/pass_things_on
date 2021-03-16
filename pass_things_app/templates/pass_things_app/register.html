@@ -10,7 +10,19 @@
         <h2>Załóż konto</h2>
         <form method="post" action="">
             {% csrf_token %}
-            {{ form.as_p }}
+            {{ form.non_field_errors }}
+            {% for field in form.visible_fields %}
+                <div class="form-group">
+                    {% if field.errors %}
+                        <ul>
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {{ field }}
+                </div>
+            {% endfor %}
             <div class="form-group form-group--buttons">
                 <a href="{% url 'login' %}" class="btn btn--without-border">Zaloguj się</a>
                 <button class="btn" type="submit">Załóż konto</button>
@@ -18,7 +30,3 @@
         </form>
     </section>
 {% endblock content %}
-{% block scripts %}
-    {{ block.super }}
-    <script src="{% static 'pass_things_app/js/register_login.js' %}"></script>
-{% endblock %}
