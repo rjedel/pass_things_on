@@ -205,11 +205,11 @@ class EditProfileView(LoginRequiredMixin, View):
 
 class ChangePasswordView(LoginRequiredMixin, View):
     def get(self, request):
-        form = UserPasswordChangeForm(user=request.user)
+        form = UserPasswordChangeForm(user=request.user, auto_id=False, )
         return render(request, 'pass_things_app/change_password.html', {'form': form})
 
     def post(self, request):
-        form = UserPasswordChangeForm(data=request.POST, user=request.user)
+        form = UserPasswordChangeForm(data=request.POST, user=request.user, auto_id=False, )
         if form.is_valid():
             form.save()
             update_session_auth_hash(request, form.user)
