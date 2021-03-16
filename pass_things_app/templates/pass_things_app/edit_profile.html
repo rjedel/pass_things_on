@@ -10,15 +10,24 @@
         <h2>Edytuj konto</h2>
         <form method="post" action="">
             {% csrf_token %}
-            {{ form.as_p }}
+            {{ form.non_field_errors }}
+            {% for field in form.visible_fields %}
+                <div class="form-group">
+                    {% if field.errors %}
+                        <ul>
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {{ field }}
+                </div>
+            {% endfor %}
             <div class="form-group form-group--buttons">
                 <button class="btn" type="submit">Zmień</button>
                 <a href="{% url 'change_password' %}" class="btn btn--without-border">Zmień hasło</a>
+                <a href="{% url 'profile' %}" class="btn btn--without-border">Profil</a>
             </div>
         </form>
     </section>
 {% endblock content %}
-{% block scripts %}
-    {{ block.super }}
-    <script src="{% static 'pass_things_app/js/register_login.js' %}"></script>
-{% endblock %}

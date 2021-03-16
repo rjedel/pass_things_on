@@ -89,9 +89,19 @@ class AddDonationForm(forms.Form):
 
 
 class EditProfileForm(forms.ModelForm):
-    email = forms.CharField(label=False, widget=forms.TextInput(attrs={'placeholder': 'Email'}))
-    first_name = forms.CharField(label=False, widget=forms.TextInput(attrs={'placeholder': 'Imię'}))
-    last_name = forms.CharField(label=False, widget=forms.TextInput(attrs={'placeholder': 'Nazwisko'}))
+    email = forms.CharField(label=False,
+                            max_length=254,
+                            widget=forms.TextInput(attrs={'placeholder': 'Email'}))
+
+    first_name = forms.CharField(label=False,
+                                 min_length=2,
+                                 max_length=30,
+                                 widget=forms.TextInput(attrs={'placeholder': 'Imię'}))
+
+    last_name = forms.CharField(label=False,
+                                min_length=2,
+                                max_length=150,
+                                widget=forms.TextInput(attrs={'placeholder': 'Nazwisko'}))
 
     password = forms.CharField(label=False,
                                widget=forms.PasswordInput(attrs={'placeholder': 'Obecne hasło', }))
@@ -100,14 +110,15 @@ class EditProfileForm(forms.ModelForm):
         model = User
         fields = ('email', 'first_name', 'last_name',)
 
-    def clean(self):
-        cleaned_data = super().clean()
-        password = self.cleaned_data.get('password')
-        email = self.cleaned_data.get('email')
-        user = authenticate(email=email, password=password)
-        if password and user is None:
-            raise forms.ValidationError({'password': 'Błędne Hasło'})
-        return cleaned_data
+    # the email cannot be changed:
+    # def clean(self):
+    #     cleaned_data = super().clean()
+    #     password = self.cleaned_data.get('password')
+    #     email = self.cleaned_data.get('email')
+    #     user = authenticate(email=email, password=password)
+    #     if password and user is None:
+    #         raise forms.ValidationError({'password': 'Błędne Hasło'})
+    #     return cleaned_data
 
 
 class UserPasswordChangeForm(PasswordChangeForm):

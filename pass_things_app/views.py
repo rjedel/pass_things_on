@@ -194,9 +194,9 @@ class EditProfileView(LoginRequiredMixin, View):
 
     def post(self, request):
         form = EditProfileForm(request.POST, instance=request.user, auto_id=False)
-        # password = form.data['password']
-        # if password and not request.user.check_password(password):
-        #     form.add_error('password', 'Błędne Hasło')
+        password = form.data['password']
+        if password and not request.user.check_password(password):
+            form.add_error('password', 'Błędne Hasło')
         if form.is_valid():
             form.save()
             return redirect(reverse('profile'))
