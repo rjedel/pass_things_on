@@ -23,7 +23,7 @@
             <h1 style="display: inline">Email:</h1>
             <p class="btn btn--highlighted">{{ user.get_username }}</p>
         </div>
-        {% if user_donations %}
+        {% if formset|length > 0 %}
             <h2>Przekazałeś</h2>
             <table class="tg form-group">
                 <thead>
@@ -37,34 +37,63 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for donation in user_donations %}
-                    <tr>
-                        <td class="tg-0lax">{{ forloop.counter }}</td>
-                        <td class="tg-0lax">{{ donation.pick_up_date }}</td>
-                        <td class="tg-0lax">{{ donation.quantity }}</td>
-                        <td class="tg-0lax">{{ donation.institution }}</td>
-                        <td class="tg-0lax">{{ donation.categories.all|slice:":5"|join:", " }}</td>
-                        <td class="tg-0lax" data-donation_pk="{{ donation.pk }}">
-                            <input type="radio" id="{{ donation.pk }}--yes"
-                                   name="is_taken--{{ donation.pk }}"
-                                   value="yes"
-                                   {% if donation.is_taken is True %}checked{% endif %}>
-                            <label for="{{ donation.pk }}--yes">Tak</label>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    {{ formset.management_form }}
+                    {% for form in formset %}
+                        {{ form.id }}
+                        <tr>
+                            <td class="tg-0lax">{{ forloop.counter }}</td>
+                            <td class="tg-0lax">{{ form.pick_up_date.value }}</td>
+                            <td class="tg-0lax">{{ form.quantity.value }}</td>
+                            <td class="tg-0lax">
+                                {% spaceless %}
+                                    {% for i in form.institution.field.queryset %}
+                                        {% if i.pk == form.institution.value %}
+                                            {{ i.name }}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endspaceless %}
+                            </td>
+                            <td class="tg-0lax">
+                                {% for category_pk in form.categories.value %}
+                                    {% for category in form.categories.field.queryset %}
+                                        {% if category_pk == category.pk %}
+                                            {% if not forloop.parentloop.counter == form.categories.value|length %}
+                                                {{ category.name|add:', ' }}
+                                            {% else %}
+                                                {{ category.name }}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </td>
+                            <td class="tg-0lax">
+                                <label>
+                                    <input type="radio"
+                                           name="form-{{ forloop.counter0 }}-is_taken"
+                                           value="true"
+                                           {% if form.is_taken.value is True %}checked{% endif %}>
+                                    Tak</label>
 
-                            <input type="radio" id="{{ donation.pk }}--no"
-                                   name="is_taken--{{ donation.pk }}"
-                                   value="no"
-                                   {% if donation.is_taken is False %}checked{% endif %}>
-                            <label for="{{ donation.pk }}--no">Nie</label>
+                                <label>
+                                    <input type="radio"
+                                           name="form-{{ forloop.counter0 }}-is_taken"
+                                           value="false"
+                                           {% if form.is_taken.value is False %}checked{% endif %}>
+                                    Nie</label>
 
-                            <input type="radio" id="{{ donation.pk }}--unknown"
-                                   name="is_taken--{{ donation.pk }}"
-                                   value="unknown"
-                                   {% if donation.is_taken is None %}checked{% endif %}>
-                            <label for="{{ donation.pk }}--unknown">Brak informacji</label>
-                        </td>
-                    </tr>
-                {% endfor %}
+                                <label>
+                                    <input type="radio"
+                                           name="form-{{ forloop.counter0 }}-is_taken"
+                                           value="unknown"
+                                           {% if form.is_taken.value is None %}checked{% endif %}>
+                                    Brak informacji</label>
+                                <button type="submit">zmień</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </form>
                 </tbody>
             </table>
         {% endif %}
