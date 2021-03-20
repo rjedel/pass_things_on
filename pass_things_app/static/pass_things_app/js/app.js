@@ -469,7 +469,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function changeTable() {
         const donationTr = document.querySelectorAll('tbody tr');
         donationTr.forEach(tr => {
-                if (tr.lastElementChild.firstElementChild.checked) {
+                if (tr.lastElementChild.firstElementChild.firstElementChild.checked) {
                     const toChange = tr.querySelectorAll('td').forEach(td => td.style.color = 'lightgray');
                 } else {
                     tr.querySelectorAll('td').forEach(td => td.style.color = '#333')
@@ -483,36 +483,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const isTaken = document.querySelectorAll('tbody tr td:last-child [type="radio"]');
 
     isTaken.forEach(input => input.addEventListener("change", function (evt) {
-        const donationPk = evt.target.parentElement.dataset.donation_pk;
-        const donationVal = evt.target.value;
-
-
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-
-        const csrftoken = getCookie('csrftoken');
-
 
         $.ajax({
             url: "/profile/",
             type: "POST",
-            data: {
-                'csrfmiddlewaretoken': csrftoken,
-                'donationPk': donationPk,
-                'donationVal': donationVal
-            },
+            data: $('form').serializeArray(),
 
             success: function (json) {
                 if (json['response']) {

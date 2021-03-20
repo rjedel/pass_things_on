@@ -173,15 +173,19 @@ class ProfileView(LoginRequiredMixin, View):
         return render(request, 'pass_things_app/profile.html', context=ctx)
 
     def post(self, request):
-        DonationFormSet = forms.modelformset_factory(
-            Donation,
-            fields=('is_taken',),
-            extra=0,
-        )
-        formset = DonationFormSet(request.POST)
-        if formset.is_valid():
-            formset.save()
-        return redirect(reverse('profile'))
+        if request.is_ajax():
+            DonationFormSet = forms.modelformset_factory(
+                Donation,
+                fields=('is_taken',),
+                extra=0,
+            )
+            formset = DonationFormSet(request.POST)
+            if formset.is_valid():
+                formset.save()
+                return JsonResponse({'response': True})
+            return JsonResponse({'response': False})
+
+        return JsonResponse({})
 
 
 class EditProfileView(LoginRequiredMixin, View):
