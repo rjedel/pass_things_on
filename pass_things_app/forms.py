@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.password_validation import validate_password
+from django.core.validators import EmailValidator
 
 from .models import Category, Institution
 
@@ -141,3 +142,10 @@ class UserPasswordChangeForm(PasswordChangeForm):
         if old_password == new_password1 or old_password == new_password2:
             raise forms.ValidationError('Nowe hasło musi się różnić od starego')
         return cleaned_data
+
+
+class ContactForm(forms.Form):
+    email = forms.CharField(widget=forms.EmailInput(attrs={'placeholder': 'Email'}), validators=[EmailValidator()])
+    name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Imię'}))
+    surname = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Nazwisko'}))
+    message = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Wiadomość', 'rows': '1', 'cols': False}))

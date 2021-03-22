@@ -1,0 +1,15 @@
+{% extends 'pass_things_app/base.html' %}
+{% load static %}
+{% block title %}Formularz kontaktowy{% endblock title %}
+{% block content %}
+<header>
+    {% include 'pass_things_app/menu.html' %}
+</header>
+
+{% if not msg %}
+    {% include 'pass_things_app/footer.html' %}
+{% else %}
+    <h2 style="color: red;">{{ msg }}</h2>
+{% endif %}
+
+{% endblock content %}

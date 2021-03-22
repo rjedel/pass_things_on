@@ -1,0 +1,49 @@
+{% load static %}
+
+{% url 'contact' as contact_url %}
+
+<footer>
+    <div id="contact" class="contact">
+        <h2>Skontaktuj się z nami</h2>
+        <h3>Formularz kontaktowy</h3>
+        <form class="form--contact" method="post" action="{{ contact_url }}">
+            {% csrf_token %}
+            {{ contact_form.non_field_errors }}
+            <div class="form-group form-group--100">
+                {{ contact_form.email.errors }}
+                {{ contact_form.email }}
+            </div>
+            <div class="form-group form-group--50">
+                {{ contact_form.name.errors }}
+                {{ contact_form.name }}
+            </div>
+            <div class="form-group form-group--50">
+                {{ contact_form.surname.errors }}
+                {{ contact_form.surname }}
+            </div>
+
+            <div class="form-group">
+                {{ contact_form.message.errors }}
+                {{ contact_form.message }}
+            </div>
+
+
+            <div class="form-group form-group--buttons">
+                <button class="btn" type="submit">Wyślij</button>
+                {% if request.path == contact_url %}
+                <a href="{% url 'landing_page' %}"><br><br><br>
+                    <button class="btn" type="button">Strona główna</button>
+                </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+    <br><br><br><br><br><br>
+    <div class="bottom-line">
+        <span class="bottom-line--copy">Copyright &copy; 2021</span>
+        <div class="bottom-line--icons">
+            <a href="#" class="btn btn--small"><img src="{% static 'pass_things_app/images/icon-facebook.svg' %}"/></a>
+            <a href="#" class="btn btn--small"><img src="{% static 'pass_things_app/images/icon-instagram.svg' %}"/></a>
+        </div>
+    </div>
+</footer>

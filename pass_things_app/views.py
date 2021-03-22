@@ -4,13 +4,14 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate, login, update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.mail import send_mail
 from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 
-from .forms import RegisterForm, CustomLoginForm, AddDonationForm, EditProfileForm, UserPasswordChangeForm
+from .forms import RegisterForm, CustomLoginForm, AddDonationForm, EditProfileForm, UserPasswordChangeForm, ContactForm
 from .models import Donation, Institution
 
 User = get_user_model()
@@ -218,3 +219,65 @@ class ChangePasswordView(LoginRequiredMixin, View):
             return render(request, 'pass_things_app/change_password.html', context=ctx)
 
         return render(request, 'pass_things_app/change_password.html', {'form': form})
+
+
+class ContactView(View):
+    def get(self, request):
+        contact_form = ContactForm(auto_id=False, )
+        return render(request, 'pass_things_app/contact_form.html', {'contact_form': contact_form})
+
+    def post(self, request):
+        contact_form = ContactForm(request.POST, auto_id=False, )
+        ctx = {
+            'contact_form': contact_form,
+        }
+        if contact_form.is_valid():
+            user_email = contact_form.cleaned_data['email']
+            name = contact_form.cleaned_data['name']
+            surname = contact_form.cleaned_data['surname']
+            message = contact_form.cleaned_data['message']
+
+            confirmation_to_user = """\rDzień dobry {},
+
+Dziękujemy za wiadomość
+Poniżej treść wysłanej wiadomości:
+"{}"
+
+Pozdrawiamy,
+Zespół Lorem ipsum      
+"""
+
+            send_mail(
+                subject='Potwierdzenie wysłania wiadomości',
+                message=confirmation_to_user.format(name, message),
+                from_email=None,
+                recipient_list=[user_email],
+                fail_silently=False,
+            )
+
+            confirmation_to_superusers = """\rWiadomość od:
+imię:
+{}
+nazwisko:
+{}
+e-mail:
+{}
+
+treść wiadomości:
+{}
+"""
+
+            superusers = list(User.objects.filter(is_superuser=True).values_list('email', flat=True))
+
+            send_mail(
+                subject='Wiadomość od: {}'.format(user_email),
+                message=confirmation_to_superusers.format(name, surname, user_email, message),
+                from_email=None,
+                recipient_list=superusers,
+                fail_silently=False,
+            )
+
+            ctx['msg'] = 'Wiadomość wysłana, za chwilę otrzymasz potwierdzenie na swój adres e-mail'
+            render(request, 'pass_things_app/contact_form.html', context=ctx)
+
+        return render(request, 'pass_things_app/contact_form.html', context=ctx)

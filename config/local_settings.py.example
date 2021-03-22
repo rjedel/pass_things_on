@@ -21,3 +21,7 @@ DATABASES = {
         'PORT': '5432'
     }
 }
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'example@gmail.com'
+EMAIL_HOST_PASSWORD = 'very_secret'
