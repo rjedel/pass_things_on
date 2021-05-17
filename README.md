@@ -1,6 +1,6 @@
 # Pass things on
 
-It is a Django Web application where everyone can pass things on to trusted institutions.
+A web application that allows the user to donate unwanted items to trusted institutions (foundations, non-governmental organizations, local donations). The application is created by means of the Django framework, I used a user model that requires only an e-mail address and password to register. Detailed data about institutions are downloaded asynchronously using the jQuery library. Forms are handled by JavaScript.
 
 Landing page                                      |Steps
 :------------------------------------------------:|:--------------------------------------------------:
